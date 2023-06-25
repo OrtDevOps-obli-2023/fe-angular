@@ -64,7 +64,7 @@ jobs:
           AWS_SESSION_TOKEN: 'FwoGZXIvYXdzEN7//////////wEaDI86uFtTMhWTDB1FwyLEAdlAhTdrqotUR1rydwBbCiwuFwTptKwKUKH4D9uqySmQtDj2MbddEqJZNu0xH1wRn/cEymJJdgydtDIRXcekjIn+04z2DRg351RZQzum4nyoSR5m2tjLwM+O1sUOoEiKxL91PdjBZwxpp6EAxo5T/yhId5SkqI1lwzbrI8cCGK3b2UcHi+eZUQTN/mKDyOIWi6pOBD729lqlnLRe9xXA3jEckN/3LbVCnJ1Rvux+3R9xRpDpsxlTOcHe0V2wz4+MfOFa5L4orbvipAYyLZdo39bmySJcVfd7YXVmT6oquRUFxbSYstXUC/GRL6QOnckv/5VMVOSUMQ2Myw=='
           AWS_REGION: 'us-east-1'
           SOURCE_DIR: 'generated' # Adjust this based on your build output directory
-      uses: jakejarvis/s3-sync-action@v0.5.0
+      uses: jakejarvis/s3-sync-action@latest
       with:
         args: --acl public-read --follow-symlinks --delete
      
