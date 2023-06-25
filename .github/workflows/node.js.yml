@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+       persist-credentials: false
     - name: SetupNode
       uses: actions/setup-node@v3
       with:
@@ -32,14 +34,23 @@ jobs:
           - args: [--global, gulp, prettier, typescript]
     - name: Build client
       run: pnpm build
-    - name: Deploy to S3
-      uses: jakejarvis/s3-sync-action@v0.5.0
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+     - name: Reuse checked out repository
+       uses: actions/checkout@v2
+       with:
+         persist-credentials: false
+     - name: Deploy to S3
+       env:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_REGION: 'us-east-1'
           SOURCE_DIR: 'dist' # Adjust this based on your build output directory
+       uses: jakejarvis/s3-sync-action@v0.5.0
+       with:
+        args: --acl public-read --follow-symlinks --delete
+     
