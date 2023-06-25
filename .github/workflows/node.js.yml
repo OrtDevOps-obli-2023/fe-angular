@@ -58,10 +58,10 @@ jobs:
         path: generated
     - name: Deploy to S3
       env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_S3_BUCKET: 'bucket-fe-angular-default'
+          AWS_ACCESS_KEY_ID: 'ASIAQKMZMG735QELD4EP'
+          AWS_SECRET_ACCESS_KEY: 'qFvduLYpOXw2ybW0RH35CiM1VEQNKqZgiFtkFQh7'
+          AWS_SESSION_TOKEN: 'FwoGZXIvYXdzEN7//////////wEaDI86uFtTMhWTDB1FwyLEAdlAhTdrqotUR1rydwBbCiwuFwTptKwKUKH4D9uqySmQtDj2MbddEqJZNu0xH1wRn/cEymJJdgydtDIRXcekjIn+04z2DRg351RZQzum4nyoSR5m2tjLwM+O1sUOoEiKxL91PdjBZwxpp6EAxo5T/yhId5SkqI1lwzbrI8cCGK3b2UcHi+eZUQTN/mKDyOIWi6pOBD729lqlnLRe9xXA3jEckN/3LbVCnJ1Rvux+3R9xRpDpsxlTOcHe0V2wz4+MfOFa5L4orbvipAYyLZdo39bmySJcVfd7YXVmT6oquRUFxbSYstXUC/GRL6QOnckv/5VMVOSUMQ2Myw=='
           AWS_REGION: 'us-east-1'
           SOURCE_DIR: 'generated' # Adjust this based on your build output directory
       uses: jakejarvis/s3-sync-action@v0.5.0
