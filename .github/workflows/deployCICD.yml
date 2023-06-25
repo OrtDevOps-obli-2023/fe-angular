@@ -8,7 +8,25 @@ on:
     branches: [ "feature/implementCICD-gitHubAction-40" ]
   pull_request:
     branches: [ "feature/implementCICD-gitHubAction-40" ]
-
+  workflow_call:
+    inputs:
+      CI_ENV:
+        required: true
+        type: string
+      CONTENTFUL_ENVIRONMENT:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_DEFAULT_REGION:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+      AWS_S3_BUCKET:
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -61,13 +79,14 @@ jobs:
      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       #    unzip awscliv2.zip
       #    sudo ./aws/install
-    - name: Configure AWS credentials
-      run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set aws_session_token ${{ secrets.AWS_SESSION_TOKEN }}
-          aws configure set region us-east-1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{secrets.AWS_DEFAULT_REGION}}
     - name: Deploy to S3
-      run: aws s3 sync generated 's3://${{ secrets.AWS_S3_BUCKET }}' --acl public-read --delete
+      run: aws s3 sync generated s3://${{ secrets.AWS_S3_BUCKET }} --cache-control no-cache,no-store,must-revalidate --delete
 
      
