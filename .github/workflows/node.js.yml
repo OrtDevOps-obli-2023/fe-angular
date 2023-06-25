@@ -13,11 +13,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: pnpm/action-setup@v2
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v2
       with:
         version: 6.0.2
         run_install: |
           - recursive: true
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, gulp, prettier, typescript]
+    - name: Build client
+      run: pnpm build
