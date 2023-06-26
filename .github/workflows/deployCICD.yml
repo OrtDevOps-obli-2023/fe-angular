@@ -5,9 +5,9 @@ name: Build and Deploy to AWS S3 v2
 
 on:
   push:
-    branches: [ "feature/implementCICD-gitHubAction-40" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "feature/implementCICD-gitHubAction-40" ]
+    branches: [ "main" ]
   workflow_call:
     inputs:
       CI_ENV:
