@@ -5,7 +5,7 @@ name: Build and Deploy to AWS S3 v2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/angularCICD-US40-WI50" ]
   #pull_request:
   #  branches: [ "main" ]
   workflow_call:
@@ -33,12 +33,14 @@ env:
   prod: 'prod'
   staging: 'staging'
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
+       # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
+       fetch-depth: 0
        persist-credentials: false
     - name: SetupNode
       uses: actions/setup-node@v3
@@ -55,23 +57,30 @@ jobs:
           - recursive: true
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, gulp, prettier, typescript]
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
     - name: Build client
       run: pnpm build
-    
     - name: Generate build artifacts
       run: |
-          # Generate your build artifacts in the "generated" directory
           mkdir generated
-          # Copy or build your files into the "generated" directory
+          # Copy build files into the "generated" directory
           cp -R dist generated
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: generated-artifacts
         path: generated
-  deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.0
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Download build artifacts
