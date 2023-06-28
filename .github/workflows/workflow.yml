@@ -13,7 +13,7 @@ env:
   prod: 'prod'
   staging: 'staging'
 jobs:
-  setup:
+  setup-build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -64,6 +64,7 @@ jobs:
   #       uses: kitabisa/sonarqube-action@v1.2.0
   
   deploy-dev:
+    needs: setup-build
     uses: ./.github/workflows/deploy.yml
     with:
         CI_ENV: dev
