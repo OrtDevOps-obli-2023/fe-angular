@@ -3,12 +3,14 @@
 
 name: Build and Deploy
 
-on:
-  push:
-    branches: [ "feature/angularCICD-US40-WI50" ]
+#on:
+#  push:
+#    branches: [ "feature/angularCICD-US40-WI50" ]
   #pull_request:
   #  branches: [ "main" ]
-  workflow_call:
+#  workflow_call:
+on:
+  workflow_dispatch:
 env:
   dev: 'dev'
   prod: 'prod'
