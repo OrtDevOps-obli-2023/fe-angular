@@ -4,10 +4,11 @@
 name: Build and Deploy
 
 on:
-  push:
-    branches: [ "feature/angularCICD-US40-WI50" ]
+  #push:
+   # branches: [ "feature/angularCICD-US40-WI50" ]
   #pull_request:
   #  branches: [ "main" ]
+  workflow_call:
 env:
   dev: 'dev'
   prod: 'prod'
@@ -69,7 +70,7 @@ jobs:
     with:
         CI_ENV: dev
         ARTIFACT_NAME: 'generated-artifacts'
-        APPROVERS: 'deploy-approvers-fe-angular'
+        APPROVERS: 'JNMiguel,SebaORT'
           #
     secrets:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
