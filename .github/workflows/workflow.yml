@@ -24,7 +24,7 @@ jobs:
     with:
         CI_ENV: dev
         ARTIFACT_NAME: 'generated-artifacts'
-        APPROVERS: 'OrtDevOps-obli-2023'
+        APPROVERS: 'SebaORT,JNMiguel, deploy-approvers-fe-angular'
           #
     secrets:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -32,6 +32,8 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+          TOKEN_API: ${{ secrets.TOKEN_API }}
+            #'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'
 
   setup-build:
     needs: approve-test

@@ -25,6 +25,8 @@ on:
         required: true
       AWS_S3_BUCKET_ANGULAR:
         required: true
+      TOKEN_API:
+        required: true
 
 jobs:
   deploy:
@@ -39,8 +41,8 @@ jobs:
     #     private_key: ${{ secrets.APP_PRIVATE_KEY }}
     - uses: trstringer/manual-approval@v1.9.0
       with:
-        secret: ${{ github.TOKEN }}
-        approvers:
+        secret: ${{ secrets.TOKEN_API }}
+        approvers: ${{ inputs.APPROVERS }}
         minimum-approvals: 1
         exclude-workflow-initiator-as-approver: false
     - name: Download build artifacts
