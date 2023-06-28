@@ -25,14 +25,24 @@ on:
         required: true
       AWS_S3_BUCKET_ANGULAR:
         required: true
+      APP_ID:
+        required: true
+      APP_CLIENT_SECRET:
+        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    - name: Generate token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_CLIENT_SECRET }}
     - uses: trstringer/manual-approval@v1.9.0
       with:
-        secret: ${{ github.TOKEN }}
+        secret: ${{ steps.generate_token.outputs.token }}
         approvers: ${{ inputs.APPROVERS }}
         minimum-approvals: 1
         exclude-workflow-initiator-as-approver: false
