@@ -1,0 +1,1 @@
+aws s3 sync $ORIGIN_PATH s3://$BUCKET --cache-control no-cache,no-store,must-revalidate --delete

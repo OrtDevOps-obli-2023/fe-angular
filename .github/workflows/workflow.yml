@@ -1,0 +1,95 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "feature/angularCICD-US40-WI50" ]
+  #pull_request:
+  #  branches: [ "main" ]
+env:
+  dev: 'dev'
+  prod: 'prod'
+  staging: 'staging'
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: SetupNode
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v2
+      with:
+        version: 6.0.2
+        run_install: |
+          - recursive: true
+            args: [--frozen-lockfile, --strict-peer-dependencies]
+          - args: [--global, gulp, prettier, typescript]
+        #cache: 'pnpm'
+ 
+  #build:
+   # needs: setup
+   # runs-on: ubuntu-latest
+   # steps:
+  #  - uses: actions/checkout@v3
+  #  - uses: pnpm/action-setup@v2
+  #    with:
+  #       version: 6.0.2
+    - run: pnpm build
+    - name: Generate build artifacts
+      run: |
+          mkdir generated
+          cp -R dist generated
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: generated-artifacts
+        path: generated
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #        # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
+  #        fetch-depth: 0
+  #        persist-credentials: false
+  #     - name: SonarQube Scan
+  #       uses: kitabisa/sonarqube-action@v1.2.0
+  
+  deploy-dev:
+    uses: ./.github/workflows/deploy.yml
+    with:
+        CI_ENV: dev
+        ARTIFACT_NAME: 'generated-artifacts'
+        APPROVERS: 'SebaORT,JNMiguel'
+    secrets:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+  # deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Download build artifacts
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: generated-artifacts
+  #       path: generated
+  #   - name: Configure AWS Credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #         aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+  #         aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  #         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+  #         aws-region: ${{secrets.AWS_DEFAULT_REGION}}
+  #   - name: Deploy to S3
+  #     run: aws s3 sync generated/dist 's3://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ env.dev}}' --cache-control no-cache,no-store,must-revalidate --delete
