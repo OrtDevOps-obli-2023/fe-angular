@@ -77,8 +77,34 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-          APP_ID: '353797'
-          APP_PRIVATE_KEY: '4DzUcBq2PzpZtMF8IBBIQ7vQwyDkScZHB9xqvQoxUsk='
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_PRIVATE_KEY: '-----BEGIN RSA PRIVATE KEY-----
+            MIIEpAIBAAKCAQEAuMM4VUg8AzRk4NUa5INUaDH72Gxqa3Gq0YURikfQWRuEIL05
+            iBUC3M2Zc2VCUjCSGx8+cp9RdQH4SBJwa0Rbt1xaFWg7UFJxpePO/3yDXg8PlZYA
+            AXx6YVFaI0axv7fVMEVHpVkiFEvE18UPIVqZQAEmX5yNqYCQedhE4X8hE7aXN43B
+            PU4W7MtfqoHuLlHtzHzyDXXO8kN7e2nrfaWpJYtvBVBHRi7YxRi1eERVp0mUIO9U
+            XshEkfQnz3bP2ngVRU3+sKr/apOC7SqxWMeDtCpHGuWOeqkH6xOvaud/SrD0uYHZ
+            qNlJ6UuCwFwO3oJkZya2GMbYEgrHuTI22LYQQQIDAQABAoIBAQCB2wtDvTIYmoFw
+            F7b/9mGjncXAtWoSO+Bvw5OxWYnQpus1S2kdAI9zerkoBnoXY/W8RDhSvTC2CP1k
+            Qjlq2q+PbsQNmaVebaNckYERxYRa3kD4xGUapk8pCNFOS8hv05dthrO1PbEbDKm7
+            cM+ShKeC+Yvr1Q8nm6lvSZYX2o7318DduUFACELFnJ0W40DoatN5WadPLlzT4usT
+            ctJw3Im96PP0RJ2WtIvZGwcNAY8tV4QiiN7t38rFZFyh7Lbr+pFcv/vFC/Aqwto2
+            IiJiIg0AIUEH3xZ8kCctABa+Mwf3+BswPnPnW8FrnoO8t0eMhzzuuPdELUymhQX0
+            r0jZEBt1AoGBAO7u9uavMKRjpBwIrA59IK7o61Ms+DBxArlw53PjB4Humv1sHoqS
+            yjhNp9nXIApGHqluIOLLgSTeZ2qEKvwL6E8R75loE/g2ozQNw452HeCQAxwkveRV
+            0qfSRZTwBQrdx5Qw1Tg6NleZveJta7NmNwZn+T+9eLdqfUeE20W2LxGnAoGBAMX1
+            tcFo60iKlzkely1GpmC9pZ00deHxQvykFaraye8+ncbur/7aoXcrCxqfNbYzse5Q
+            +5OL2TmVTwwUoJXcXsH2vHtGmhQFXSRa72rYz81hPlInn+rzSR/H16t/06c/E12h
+            eEqhed044hTSG5+pApcU513oKmnuH16R6m7hFXvXAoGBANo1+d2yT91CduV3chOF
+            aWz0ob6DymMLQu6zU15+ECQ1Eu2xaa8q4m5LValYlBVt9qDMSFJ4gwh16cLY1Bz+
+            jvpvqf/TkrFUzPZEP74C18R4Ia75S0eWrd3A5vVfw2sqIxSPCJviZjDY4xdA0WS1
+            TDmYiYUR+IaiRaokhtGC0jfvAoGATOON8Ax/bpKeAAqYr3ZEg0jF/dR1gQfDe/uD
+            ivQmAO3yPGVTKIrksjOewX1bUGSt1KHRxVJJUitjI48TfIG2sGHUfZFDoUkgD1He
+            skJ6HAyMNz66x3gtS9HEPBGPNOOz8ucXoO0tNzaz4WBmaFIt9l6hKwFVEAX0WzgT
+            tXNpc8sCgYAy8eGPj2UcZfM1yIisRsS8CQS4AbzfoUnmvv0owjDMqCJ/vtBKAe4d
+            9gPPeqq18z/gjvXbB3ahUyzUbOhW7Tqf76kN1YPMF+EWf9NFge3mBTebUOygre3u
+            o5EZ+KmTWsjCRDZb8HrXHdONNbJpO27GC13tXIz7u6bANey6f/idcQ==
+            -----END RSA PRIVATE KEY-----'
   # deploy:
   #   needs: test
   #   runs-on: ubuntu-latest
