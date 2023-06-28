@@ -62,8 +62,10 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-    - name: Build client
-      run: pnpm build
+    - uses: pnpm/action-setup@v2
+      with:
+         version: 6.0.2
+    - run: pnpm build
     - name: Generate build artifacts
       run: |
           mkdir generated
