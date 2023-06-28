@@ -4,8 +4,8 @@
 name: Build and Deploy
 
 on:
-  #push:
-   # branches: [ "feature/angularCICD-US40-WI50" ]
+  push:
+    branches: [ "feature/angularCICD-US40-WI50" ]
   #pull_request:
   #  branches: [ "main" ]
   workflow_call:
