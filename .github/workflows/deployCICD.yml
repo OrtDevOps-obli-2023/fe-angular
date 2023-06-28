@@ -58,6 +58,14 @@ jobs:
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, gulp, prettier, typescript]
         cache: 'pnpm'
+    - name: Cache
+      uses: actions/cache@v1.2.1
+      with: 
+        # A directory to store and save the cache
+        path: /usr/local/lib/node_modules/
+        # An explicit key for restoring and saving the cache
+        key: cache 
+        
   build:
     needs: setup
     runs-on: ubuntu-latest
