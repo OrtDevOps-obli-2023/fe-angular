@@ -30,10 +30,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: trstringer/manual-approval@v1
+    - uses: trstringer/manual-approval@v1.9.0
       with:
         secret: ${{ github.TOKEN }}
         approvers: ${{ inputs.APPROVERS }}
+        minimum-approvals: 1
+        exclude-workflow-initiator-as-approver: false
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
