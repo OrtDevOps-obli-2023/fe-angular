@@ -56,12 +56,13 @@ jobs:
         cache: 'pnpm'
     - uses: montudor/action-zip@v1
       with:
-       args: zip -qq -r ${{ github.workspace }}/node-modules.zip /usr/local/lib/node_modules/
+       args: zip -qq -r node-modules.zip node_modules
+       working-directory: /usr/local/lib/
     - name: Upload node-modules artifacts
       uses: actions/upload-artifact@v2
       with:
         name: node-modules-artifact
-        path: ${{ github.workspace }}/node-modules.zip
+        path: node-modules.zip
  
   build:
     needs: setup
@@ -75,10 +76,10 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: node-modules-artifact
-        path: ${{github.workspace}}
+        path: ./
     - uses: montudor/action-zip@v1
       with:
-        args: unzip -qq ${{ github.workspace }}/node-modules.zip -d /usr/local/lib/node_modules/
+        args: unzip -qq node-modules.zip -d /usr/local/lib/node_modules/
         
     - run: pnpm build
     - name: Generate build artifacts
