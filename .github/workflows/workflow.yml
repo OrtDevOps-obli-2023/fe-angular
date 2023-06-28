@@ -77,8 +77,8 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-          APP_ID: '353791'
-          APP_CLIENT_SECRET: 'd45bb38aa072396a902457df0615bcfe254b79de'
+          APP_ID: '353797'
+          APP_PRIVATE_KEY: '4DzUcBq2PzpZtMF8IBBIQ7vQwyDkScZHB9xqvQoxUsk='
   # deploy:
   #   needs: test
   #   runs-on: ubuntu-latest

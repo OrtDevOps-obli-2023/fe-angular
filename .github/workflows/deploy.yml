@@ -27,7 +27,7 @@ on:
         required: true
       APP_ID:
         required: true
-      APP_CLIENT_SECRET:
+      APP_PRIVATE_KEY:
         required: true
 
 jobs:
@@ -39,7 +39,8 @@ jobs:
       uses: tibdex/github-app-token@v1
       with:
         app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_CLIENT_SECRET }}
+        
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
     - uses: trstringer/manual-approval@v1.9.0
       with:
         secret: ${{ steps.generate_token.outputs.token }}
