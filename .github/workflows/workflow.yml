@@ -70,7 +70,7 @@ jobs:
     with:
         CI_ENV: dev
         ARTIFACT_NAME: 'generated-artifacts'
-        APPROVERS: 'JNMiguel,SebaORT'
+        APPROVERS: 'OrtDevOps-obli-2023'
           #
     secrets:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
