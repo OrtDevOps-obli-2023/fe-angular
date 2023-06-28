@@ -38,10 +38,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-       # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
-       fetch-depth: 0
-       persist-credentials: false
     - name: SetupNode
       uses: actions/setup-node@v3
       with:
@@ -58,16 +54,12 @@ jobs:
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, gulp, prettier, typescript]
         cache: 'pnpm'
-    - name: Cache
-      uses: actions/cache@v3
-      with: 
-        # A directory to store and save the cache
+    - name: Upload node-modules artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: node-modules-artifact
         path: /usr/local/lib/node_modules/
-        # An explicit key for restoring and saving the cache
-        key: ${{ runner.OS }}-pnpm-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.OS }}-npm-cache-
-        
+ 
   build:
     needs: setup
     runs-on: ubuntu-latest
@@ -76,11 +68,11 @@ jobs:
     - uses: pnpm/action-setup@v2
       with:
          version: 6.0.2
-    - uses: actions/cache/restore@v3
-      id: cache
+    - name: Download node-modules artifact
+      uses: actions/download-artifact@v2
       with:
-       path: /usr/local/lib/node_modules/
-       key: ${{ runner.OS }}-pnpm-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
+        name: node-modules-artifact
+        path: /usr/local/lib/node_modules/
     - run: pnpm build
     - name: Generate build artifacts
       run: |
@@ -96,6 +88,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+         # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
+         fetch-depth: 0
+         persist-credentials: false
       - name: SonarQube Scan
         uses: kitabisa/sonarqube-action@v1.2.0
   deploy:
