@@ -25,28 +25,6 @@ jobs:
       uses: actions/checkout@v3
     - name: "Setup PNPM"
       uses: ./.github/actions/setup-pnpm
-    # - name: SetupNode
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: '16.x'
-    # - name: Setup PNPM
-    #   uses: pnpm/action-setup@v2
-    #   with:
-    #     version: 6.0.2
-    #     run_install: |
-    #       - recursive: true
-    #         args: [--frozen-lockfile, --strict-peer-dependencies]
-    #       - args: [--global, gulp, prettier, typescript]
-        #cache: 'pnpm'
- 
-  #build:
-   # needs: setup
-   # runs-on: ubuntu-latest
-   # steps:
-  #  - uses: actions/checkout@v3
-  #  - uses: pnpm/action-setup@v2
-  #    with:
-  #       version: 6.0.2
     - run: pnpm build
     - name: Generate build artifacts
       run: |
@@ -57,21 +35,35 @@ jobs:
       with:
         name: generated-artifacts
         path: generated
+
+  test-code:
+    needs: setup-build
+    name: Codacy Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Codacy Analysis
+        uses: codacy/codacy-analysis-cli-action@master
   # test:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #       with:
+  #  needs: setup-build
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v3
+  #     with:
   #        # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
   #        fetch-depth: 0
   #        persist-credentials: false
-  #     - name: SonarQube Scan
-  #       uses: kitabisa/sonarqube-action@v1.2.0
+  #   - name: SonarQube Scan
+  #     uses: kitabisa/sonarqube-action@v1.2.0
+  #     with:
+  #       host: ${{ secrets.SONARQUBE_HOST }}
+  #       login: ${{ secrets.SONARQUBE_TOKEN }}
   
   deploy-dev:
-     needs: setup-build
+     needs: test-code
      uses: ./.github/workflows/deploy.yml
      with:
          CI_ENV: 'dev'
