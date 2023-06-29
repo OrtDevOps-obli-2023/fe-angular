@@ -18,25 +18,7 @@ env:
   staging: 'staging'
 jobs:
 
-  approve-test:
-   # needs: setup-build
-    uses: ./.github/workflows/deploy.yml
-    with:
-        CI_ENV: dev
-        ARTIFACT_NAME: 'generated-artifacts'
-        APPROVERS: 'SebaORT,JNMiguel, deploy-approvers-fe-angular'
-          #
-    secrets:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-          AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-          TOKEN_API: ${{ secrets.TOKEN_API }}
-            #'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'
-
   setup-build:
-    needs: approve-test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -86,7 +68,45 @@ jobs:
   #     - name: SonarQube Scan
   #       uses: kitabisa/sonarqube-action@v1.2.0
   
- 
+  deploy-dev:
+     needs: setup-build
+     uses: ./.github/workflows/deploy.yml
+     with:
+         CI_ENV: dev
+         ARTIFACT_NAME: 'generated-artifacts'
+     secrets:
+           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+           TOKEN_API: ${{ secrets.TOKEN_API }}
+  deploy-staging:
+     needs: setup-build
+     uses: ./.github/workflows/deploy.yml
+     with:
+         CI_ENV: staging
+         ARTIFACT_NAME: 'generated-artifacts'
+     secrets:
+           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+           TOKEN_API: ${{ secrets.TOKEN_API }}
+  deploy-prod:
+      needs: setup-build
+      uses: ./.github/workflows/deploy.yml
+      with:
+          CI_ENV: prod
+          ARTIFACT_NAME: 'generated-artifacts'
+      secrets:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+            TOKEN_API: ${{ secrets.TOKEN_API }}
   # deploy:
   #   needs: test
   #   runs-on: ubuntu-latest

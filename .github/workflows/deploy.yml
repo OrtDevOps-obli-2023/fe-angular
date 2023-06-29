@@ -11,9 +11,9 @@ on:
         required: true
         type: string
         default: 'generated-artifacts'
-      APPROVERS:
-        required: true
-        type: string
+      # APPROVERS:
+      #   required: true
+      #   type: string
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -27,24 +27,26 @@ on:
         required: true
       TOKEN_API:
         required: true
-
+env:
+  APPROVERS: 'SebaORT,JNMiguel, deploy-approvers-fe-angular'
 jobs:
+  approve-deploy:
+   #validate deploy only if we are deploying to staging or prod
+   if: ${{ inputs.CI_ENV }} != 'dev'
+   runs-on: ubuntu-latest
+   steps:
+   - uses: trstringer/manual-approval@v1.9.0
+     with:
+        secret: ${{ secrets.TOKEN_API }}
+        approvers: ${{ env.APPROVERS }}
+        issue-title: "Approve deploy to ${{ inputs.CI_ENV}}"
+        exclude-workflow-initiator-as-approver: false
+        # additional-approved-words: 'si'
+        # additional-denied-words: 'no'
+        minimum-approvals: 1
   deploy:
     runs-on: ubuntu-latest
     steps:
-    # - name: Generate token
-    #   id: generate_token
-    #   uses: tibdex/github-app-token@v1
-    #   with:
-    #     app_id: ${{ secrets.APP_ID }}
-        
-    #     private_key: ${{ secrets.APP_PRIVATE_KEY }}
-    - uses: trstringer/manual-approval@v1.9.0
-      with:
-        secret: ${{ secrets.TOKEN_API }}
-        approvers: ${{ inputs.APPROVERS }}
-        minimum-approvals: 1
-        exclude-workflow-initiator-as-approver: false
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
@@ -64,7 +66,7 @@ jobs:
         ORIGIN_PATH: 'generated/dist'
         BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
   
-        #run: aws s3 sync generated/dist 's3://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ env.dev}}' --cache-control no-cache,no-store,must-revalidate --delete
+    #run: aws s3 sync generated/dist 's3://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ env.dev}}' --cache-control no-cache,no-store,must-revalidate --delete
     #- name: Deploy to production
     #  run: echo deploying
        
