@@ -13,6 +13,7 @@ on:
       # APPROVERS:
       #   required: true
       #   type: string
+      
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -68,8 +69,4 @@ jobs:
       env:
         ORIGIN_PATH: 'generated/dist'
         BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
-  
-    #run: aws s3 sync generated/dist 's3://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ env.dev}}' --cache-control no-cache,no-store,must-revalidate --delete
-    #- name: Deploy to production
-    #  run: echo deploying
        
