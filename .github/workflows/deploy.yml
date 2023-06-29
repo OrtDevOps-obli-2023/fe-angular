@@ -46,6 +46,7 @@ jobs:
         minimum-approvals: 1
   deploy:
     needs: approve
+    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
     - name: Download build artifacts
