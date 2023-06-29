@@ -45,6 +45,7 @@ jobs:
         # additional-denied-words: 'no'
         minimum-approvals: 1
   deploy:
+    needs: approve-deploy
     runs-on: ubuntu-latest
     steps:
     - name: Download build artifacts
