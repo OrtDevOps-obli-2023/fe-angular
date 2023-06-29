@@ -82,7 +82,7 @@ jobs:
            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
            TOKEN_API: ${{ secrets.TOKEN_API }}
   deploy-staging:
-     needs: setup-build
+     needs: deploy-dev
      uses: ./.github/workflows/deploy.yml
      with:
          CI_ENV: 'staging'
@@ -95,7 +95,7 @@ jobs:
            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
            TOKEN_API: ${{ secrets.TOKEN_API }}
   deploy-prod:
-      needs: setup-build
+      needs: deploy-staging
       uses: ./.github/workflows/deploy.yml
       with:
           CI_ENV: 'prod'
