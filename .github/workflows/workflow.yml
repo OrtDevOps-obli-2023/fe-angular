@@ -38,14 +38,22 @@ jobs:
 
   test-code:
     needs: setup-build
-    name: Codacy Analysis
+    name: CodeQL Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Codacy Analysis
-        uses: codacy/codacy-analysis-cli-action@master
+      #- name: Checkout code
+      #  uses: actions/checkout@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: generated-artifacts
+          path: generated
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+  
+        # - name: Run Codacy Analysis
+      #   uses: codacy/codacy-analysis-cli-action@v4.3.0
+  
   # test:
   #  needs: setup-build
   #  runs-on: ubuntu-latest
