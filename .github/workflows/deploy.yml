@@ -62,7 +62,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{secrets.AWS_DEFAULT_REGION}}
     - name: Deploy to S3
-      run: ./.github/scripts/deploy.sh
+      run: ../scripts/deploy.sh
       shell: bash
       env:
         ORIGIN_PATH: 'generated/dist'
