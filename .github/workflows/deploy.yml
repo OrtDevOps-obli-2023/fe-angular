@@ -31,7 +31,7 @@ env:
 jobs:
   approve:
    #validate deploy only if we are deploying to staging or prod
-   if: ${{ inputs.CI_ENV }} != 'dev'
+   if: ${{ inputs.CI_ENV }} == 'staging' || ${{ inputs.CI_ENV }} == 'prod'
    runs-on: ubuntu-latest
    steps:
    - run: echo 'environment ${{ inputs.CI_ENV }}'
