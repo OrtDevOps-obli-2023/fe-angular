@@ -49,6 +49,7 @@ jobs:
     if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
@@ -62,7 +63,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{secrets.AWS_DEFAULT_REGION}}
     - name: Deploy to S3
-      run: ../scripts/deploy.sh
+      run: ./.github/scripts/deploy.sh
       shell: bash
       env:
         ORIGIN_PATH: 'generated/dist'
