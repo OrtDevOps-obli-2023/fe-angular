@@ -38,34 +38,20 @@ jobs:
 
   test-code:
     needs: setup-build
-    name: Codacy Analysis
+    name: SonarQube Analysis
     runs-on: ubuntu-latest
     steps:
-      #- name: Checkout code
-      #  uses: actions/checkout@v3
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
+      - uses: actions/checkout@v2
         with:
-          name: generated-artifacts
-          path: generated
-      # - name: Perform CodeQL Analysis
-      #   uses: github/codeql-action/analyze@v2
-  
-      - name: Run Codacy Analysis
-        uses: codacy/codacy-analysis-cli-action@v4.3.0
-        with:
-          output: results.sarif
-          format: sarif
-          # Adjust severity of non-security issues
-          gh-code-scanning-compat: true
-          # Force 0 exit code to allow SARIF file generation
-          # This will hand over control about PR rejection to the GitHub side
-          max-allowed-issues: 2147483647
-        # Upload the SARIF file generated in the previous step
-      - name: Upload SARIF results file
-        uses: github/codeql-action/upload-sarif@main
-        with:
-          sarif_file: results.sarif
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
   # test:
   #  needs: setup-build
