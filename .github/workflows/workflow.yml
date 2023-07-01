@@ -38,38 +38,31 @@ jobs:
 
   test-code:
     needs: setup-build
-    name: SonarQube Analysis
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
+      - name: Scan
+        uses: SonarSource/sonarcloud-github-action@master
         env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_API }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+     
+     
+          # - uses: sonarsource/sonarqube-quality-gate-action@master
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   
-  # test:
-  #  needs: setup-build
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v3
-  #     with:
-  #        # Disabling shallow clone is recommended for improving relevancy of reporting for sonarQube
-  #        fetch-depth: 0
-  #        persist-credentials: false
-  #   - name: SonarQube Scan
-  #     uses: kitabisa/sonarqube-action@v1.2.0
-  #     with:
-  #       host: ${{ secrets.SONARQUBE_HOST }}
-  #       login: ${{ secrets.SONARQUBE_TOKEN }}
-  
-  deploy-dev:
+  dev:
      needs: test-code
      uses: ./.github/workflows/deploy.yml
      with:
@@ -82,8 +75,8 @@ jobs:
            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
            TOKEN_API: ${{ secrets.TOKEN_API }}
-  deploy-staging:
-     needs: deploy-dev
+  staging:
+     needs: dev
      uses: ./.github/workflows/deploy.yml
      with:
          CI_ENV: 'staging'
@@ -95,8 +88,8 @@ jobs:
            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
            TOKEN_API: ${{ secrets.TOKEN_API }}
-  deploy-prod:
-      needs: deploy-staging
+  prod:
+      needs: staging
       uses: ./.github/workflows/deploy.yml
       with:
           CI_ENV: 'prod'
