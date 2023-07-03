@@ -9,7 +9,9 @@ name: Build and Deploy
 #  workflow_call:
 on:
   push:
-   branches: [ "feature/angularCICD-US40-WI50" ]
+   branches: 
+    -main
+    -feature/*
 
   workflow_dispatch:
 env:
