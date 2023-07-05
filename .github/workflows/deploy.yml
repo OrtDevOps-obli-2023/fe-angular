@@ -1,0 +1,72 @@
+name: Deploy to Amazon S3
+
+on:
+  workflow_call:
+    inputs:
+      CI_ENV:
+        required: true
+        type: string
+      ARTIFACT_NAME:
+        required: true
+        type: string
+        default: 'generated-artifacts'
+      # APPROVERS:
+      #   required: true
+      #   type: string
+      
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_DEFAULT_REGION:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+      AWS_S3_BUCKET_ANGULAR:
+        required: true
+      TOKEN_API:
+        required: true
+env:
+  APPROVERS: 'SebaORT,JNMiguel, deploy-approvers-fe-angular'
+jobs:
+  approve:
+   #validate deploy only if we are deploying to staging or prod
+   if: inputs.CI_ENV == 'staging' || inputs.CI_ENV == 'prod'
+   runs-on: ubuntu-latest
+   steps:
+   - run: echo 'environment ${{ inputs.CI_ENV }}'
+   - uses: trstringer/manual-approval@v1.9.0
+     with:
+        secret: ${{ secrets.TOKEN_API }}
+        approvers: ${{ env.APPROVERS }}
+        issue-title: "Approve deploy to ${{ inputs.CI_ENV}}"
+        exclude-workflow-initiator-as-approver: false
+        # additional-approved-words: 'si'
+        # additional-denied-words: 'no'
+        minimum-approvals: 1
+  deploy:
+    needs: approve
+    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.ARTIFACT_NAME }}
+        path: generated
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{secrets.AWS_DEFAULT_REGION}}
+    - name: Deploy to S3
+      run: ./.github/scripts/deploy.sh
+      shell: bash
+      env:
+        ORIGIN_PATH: 'generated/dist'
+        BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
+       
