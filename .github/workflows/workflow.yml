@@ -4,39 +4,38 @@
 name: Build and Deploy
 
 #on:
-  #pull_request:
-  #  branches: [ "main" ]
+#pull_request:
+#  branches: [ "main" ]
 #  workflow_call:
 on:
   push:
-   branches: 
-    -main
-    -feature/*
+    branches: 
+      -main
+      -feature/*
 
   workflow_dispatch:
 env:
-  dev: 'dev'
-  prod: 'prod'
-  staging: 'staging'
+  dev: "dev"
+  prod: "prod"
+  staging: "staging"
 jobs:
-
   setup-build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: "Setup PNPM"
-      uses: ./.github/actions/setup-pnpm
-    - run: pnpm build
-    - name: Generate build artifacts
-      run: |
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: "Setup PNPM"
+        uses: ./.github/actions/setup-pnpm
+      - run: pnpm build
+      - name: Generate build artifacts
+        run: |
           mkdir generated
           cp -R dist generated
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: generated-artifacts
-        path: generated
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: generated-artifacts
+          path: generated
 
   test-code:
     needs: setup-build
@@ -46,60 +45,62 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_API }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.TOKEN_API }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       # - uses: sonarsource/sonarqube-scan-action@master
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-     
-     
-          # - uses: sonarsource/sonarqube-quality-gate-action@master
+
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
       #   timeout-minutes: 5
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  
   dev:
-     needs: test-code
-     uses: ./.github/workflows/deploy.yml
-     with:
-         CI_ENV: 'dev'
-         ARTIFACT_NAME: 'generated-artifacts'
-     secrets:
-           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-           TOKEN_API: ${{ secrets.TOKEN_API }}
+    needs: test-code
+    uses: ./.github/workflows/deploy.yml
+    with:
+      CI_ENV: "dev"
+      ARTIFACT_NAME: "generated-artifacts"
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+      TOKEN_API: ${{ secrets.TOKEN_API }}
   staging:
-     needs: dev
-     uses: ./.github/workflows/deploy.yml
-     with:
-         CI_ENV: 'staging'
-         ARTIFACT_NAME: 'generated-artifacts'
-     secrets:
-           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-           AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-           TOKEN_API: ${{ secrets.TOKEN_API }}
+    needs: dev
+    uses: ./.github/workflows/deploy.yml
+    with:
+      CI_ENV: "staging"
+      ARTIFACT_NAME: "generated-artifacts"
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+      TOKEN_API: ${{ secrets.TOKEN_API }}
   prod:
-      needs: staging
-      uses: ./.github/workflows/deploy.yml
-      with:
-          CI_ENV: 'prod'
-          ARTIFACT_NAME: 'generated-artifacts'
-      secrets:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-            AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
-            TOKEN_API: ${{ secrets.TOKEN_API }}
+    needs: staging
+    uses: ./.github/workflows/deploy.yml
+    with:
+      CI_ENV: "prod"
+      ARTIFACT_NAME: "generated-artifacts"
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_S3_BUCKET_ANGULAR: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}
+      TOKEN_API: ${{ secrets.TOKEN_API }}
+
+#      pnpm install selenium-webdriver
+#pnpm install chromedriver
+

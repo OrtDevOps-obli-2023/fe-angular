@@ -69,4 +69,20 @@ jobs:
       env:
         ORIGIN_PATH: 'generated/dist'
         BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
-       
+  
+  selenium-tests:
+    needs: deploy
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Setup PNPM"
+        uses: ./.github/actions/setup-pnpm
+      - name: "Setup Selenium drivers"
+        run : |
+          pnpm install selenium-webdriver
+          pnpm install chromedriver
+      - name: Set environment variable
+        run: echo "DEPLOYED_URL=http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html" >> $GITHUB_ENV
+
+      - name: Run Selenium tests
+        run: node tests/selenium_test.js 
