@@ -82,8 +82,8 @@ jobs:
         run : |
           pnpm install selenium-webdriver
           pnpm install chromedriver
-      - name: Set environment variable
-        run: echo "DEPLOYED_URL=http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html" >> $GITHUB_ENV
+      # - name: Set environment variable
+      #   run: echo "DEPLOYED_URL=http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html" >> $GITHUB_ENV
 
       - name: Run Selenium tests
-        run: node tests/selenium_test.js 
+        run: node tests/selenium_test.js http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html
