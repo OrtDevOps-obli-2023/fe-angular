@@ -21,8 +21,6 @@ const { Builder, By, Key } = require("selenium-webdriver");
     logging.installConsoleHandler()
 
     //const deployedURL = 
-    console.log('Passed parameter:', parameter);
-
     const deployedURL =process.argv[2]; // process.env.DEPLOYED_URL; // 'http://bucket-fe-angular-dev.s3-website-us-east-1.amazonaws.com/index.html';
     await driver.get(deployedURL);
 
