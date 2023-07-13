@@ -8,15 +8,17 @@ name: Build and Deploy v2
 #  branches: [ "main" ]
 #  workflow_call:
 on:
+  push:
+    branches: 
+      - feature/*
+      - main
   pull_request:
     branches: [ "main" ]
     types: [opened]
-  push:
-    branches: 
-      -main
-      -feature/*
 
-  workflow_dispatch:
+      
+
+  # workflow_dispatch:
 env:
   dev: "dev"
   prod: "prod"
