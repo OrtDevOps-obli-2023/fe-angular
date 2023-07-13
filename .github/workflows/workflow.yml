@@ -8,6 +8,8 @@ name: Build and Deploy
 #  branches: [ "main" ]
 #  workflow_call:
 on:
+  pull_request:
+    types: [ready_for_review]
   push:
     branches: 
       -main
