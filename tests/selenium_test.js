@@ -10,7 +10,12 @@ const { Builder, By, Key } = require("selenium-webdriver");
   firefox = require('selenium-webdriver/firefox');
 
   var path = require('chromedriver').path;
-  var driver = chrome.Driver.createSession(new chrome.Options(), new 
+  const chromeOptions = new chrome.Options()
+  .addArguments('--no-sandbox')
+  .addArguments('--disable-dev-shm-usage')
+  .addArguments('--headless');
+
+  var driver = chrome.Driver.createSession(chromeOptions, new 
   chrome.ServiceBuilder(path).build());
 
   const logging = require('selenium-webdriver/lib/logging')
