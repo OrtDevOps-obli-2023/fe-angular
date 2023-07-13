@@ -10,7 +10,6 @@ name: Build and Deploy
 on:
   push:
     branches: 
-      -feature/seleniumTests_69_84
       -main
       -feature/*
 
