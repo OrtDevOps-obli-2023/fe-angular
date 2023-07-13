@@ -71,7 +71,8 @@ jobs:
         BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
   
   selenium-tests:
-    needs: deploy
+    needs: [deploy,approve]
+    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
