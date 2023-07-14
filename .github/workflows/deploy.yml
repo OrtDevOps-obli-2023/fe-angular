@@ -87,11 +87,12 @@ jobs:
       - run: chrome --version
       # - name: Set environment variable
       #   run: echo "DEPLOYED_URL=http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html" >> $GITHUB_ENV
+#http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html
 
       - name: Run Selenium tests
-        run: node tests/selenium_test.js http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html &
+        run: node tests/selenium_test.js http://the-internet.herokuapp.com &
       - name: Wait for tests to finish
-        run: npx wait-on http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html --timeout 5000 
+        run: npx wait-on http://the-internet.herokuapp.com --timeout 5000 
       - name: Check selenium test result
         run: |
           if [ $? -eq 0 ]; then
