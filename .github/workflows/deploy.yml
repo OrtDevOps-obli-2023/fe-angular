@@ -72,7 +72,7 @@ jobs:
   
   selenium-tests:
     needs: [deploy,approve]
-    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped')
+    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped') && needs.deploy.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -82,6 +82,7 @@ jobs:
         run : |
           pnpm install selenium-webdriver
           pnpm install chromedriver
+          pnpm install wait-on
       - uses: browser-actions/setup-chrome@latest
       - run: chrome --version
       # - name: Set environment variable
