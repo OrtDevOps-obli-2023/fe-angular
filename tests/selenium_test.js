@@ -1,5 +1,3 @@
-const { Builder, By, Key } = require("selenium-webdriver");
-
 (async function run() {
 
   var assert = require('assert'),
