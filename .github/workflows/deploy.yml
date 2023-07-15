@@ -69,4 +69,51 @@ jobs:
       env:
         ORIGIN_PATH: 'generated/dist'
         BUCKET: ${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}
-       
+  
+  selenium-tests:
+    needs: [deploy,approve]
+    if: always() && (needs.approve.result == 'success' || needs.approve.result == 'skipped') && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Setup PNPM"
+        uses: ./.github/actions/setup-pnpm
+      - name: "Setup Selenium drivers"
+        run : |
+          pnpm install selenium-webdriver
+          pnpm install chromedriver
+          pnpm install wait-on
+      - uses: browser-actions/setup-chrome@latest
+      - run: chrome --version
+      # - name: Set environment variable
+      #   run: echo "DEPLOYED_URL=http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html" >> $GITHUB_ENV
+#
+
+      - name: Run Selenium tests
+        run: node tests/selenium_test.js http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html > test_results.txt
+      - name: Wait for tests to finish
+        run: npx wait-on http://${{ secrets.AWS_S3_BUCKET_ANGULAR }}-${{ inputs.CI_ENV}}.s3-website-us-east-1.amazonaws.com/index.html --timeout 5000 
+      # - name: Check selenium test result
+      #   run: |
+      #     if [ $? -eq 0 ]; then
+      #       echo "Selenium tests passed!"
+      #     else
+      #       echo "Selenium tests failed!"
+      #       exit 1
+      #     fi
+      - name: Read test results
+        run: |
+          test_results=$(cat test_results.txt)
+          echo "Test Results: $test_results"
+      - name: Validate test results
+        run: |
+            if grep -q "error" test_results.txt; then
+              echo "Error found in test results!"
+              exit 1
+            else
+              echo "No errors found in test results."
+            fi
+ # /usr/bin/env node -e "require('actions-toolkit').Toolkit().exit.failure('Selenium tests failed!');"
+ #/usr/bin/env node -e "require('github-actions-toolkit').Toolkit().exit.failure('Error found in test results!');"
+ #pnpm install actions-toolkit
+          
